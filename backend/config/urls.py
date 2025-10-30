@@ -21,12 +21,16 @@ from django.conf import settings
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from django.views.generic import TemplateView
 
+# Imports for AUTH
+from users.views import CustomUserRegister, CustomUserLogin
+
 urlpatterns = [
     # Connecting react with django
     path('', TemplateView.as_view(template_name = 'index.html')),
 
-    # Register URL
-    # path('api/signup', )
+    # Auth URLS
+    path('auth/signup/', CustomUserRegister.as_view(), name="user-register"),
+    path('auth/login', CustomUserLogin.as_view(), name="user-login"),
 
     # Admin
     path('admin/', admin.site.urls),

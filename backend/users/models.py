@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from .validators import validate_user_age
+import datetime
 
 
 # pip install "django-phonenumber-field[phonenumbers]"
@@ -14,9 +15,6 @@ from django_countries.fields import CountryField
 
 
 class CustomUser(AbstractUser):
-    email = models.EmailField(unique=True)  # Make email unique
-    phone_number = PhoneNumberField(null=False, blank=False, unique=True)
-    date_of_birth = models.DateField(blank=False, null=False, validators=[validate_user_age])
     
     class Gender(models.TextChoices):
         MALE = 'MALE', 'Male'
@@ -33,8 +31,6 @@ class CustomUser(AbstractUser):
     # For KYC (Know Your Customer) - important for banking!
     is_verified = models.BooleanField(default=False)
     
-    USERNAME_FIELD = 'email'  # Login with email instead of username
-    REQUIRED_FIELDS = ['username', 'phone_number', 'date_of_birth']
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/users/<username>/<filename>
@@ -46,7 +42,9 @@ def user_directory_path(instance, filename):
 class Profile(models.Model):
     user = models.ForeignKey(CustomUser, related_name='profile', on_delete=models.CASCADE) # Don't forget related name for reverse lookup. user_instance.<related_name>_set.all()
     avatar = models.ImageField(upload_to=user_directory_path, default='default.jpg', blank=True)
-
+    phone_number = PhoneNumberField(null=False, blank=False, default="99999999999")
+    date_of_birth = models.DateField(blank=False, null=False, default=datetime.datetime.now, validators=[validate_user_age])
+    
 class Address(models.Model):
     user = models.ForeignKey(CustomUser, related_name="addresses", on_delete=models.CASCADE)
     country = CountryField(blank=False, null=False)
