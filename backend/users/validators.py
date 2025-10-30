@@ -1,5 +1,14 @@
-from django.core.exceptions import ValidationError
+from rest_framework.validators import ValidationError
+from django.utils import timezone
+from datetime import date
 
-def validate_address_number(value):
-    if value is not None and (value < 1 or value > 999):
-        raise ValidationError('Apartment number must be between 1 and 999.')
+def validate_user_age(value):
+    today = timezone.now().date()
+    
+    if value > today:
+        raise ValidationError('The date of birth cannot be in the future.')
+    age = today.year - value.year - ((today.month, today.day) < (value.month, value.day))
+    if age < 18:
+        raise ValidationError('You must be at least 18 years old.')
+    
+

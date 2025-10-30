@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-
-from .validators import validate_address_number
+from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinLengthValidator, MaxLengthValidator
+from .validators import validate_user_age
 
 
 # pip install "django-phonenumber-field[phonenumbers]"
@@ -11,6 +12,30 @@ from phonenumber_field.modelfields import PhoneNumberField
 # https://pypi.org/project/django-countries/
 from django_countries.fields import CountryField
 
+
+class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)  # Make email unique
+    phone_number = PhoneNumberField(null=False, blank=False, unique=True)
+    date_of_birth = models.DateField(blank=False, null=False, validators=[validate_user_age])
+    
+    class Gender(models.TextChoices):
+        MALE = 'MALE', 'Male'
+        FEMALE = 'FEMALE', 'Female'
+        OTHER = 'OTHER', 'Other'
+        NOT_SPECIFIED = 'NOT_SPECIFIED', 'Not Specified'
+    
+    gender = models.CharField(
+        max_length=13, 
+        choices=Gender.choices, 
+        default=Gender.NOT_SPECIFIED
+    )
+    
+    # For KYC (Know Your Customer) - important for banking!
+    is_verified = models.BooleanField(default=False)
+    
+    USERNAME_FIELD = 'email'  # Login with email instead of username
+    REQUIRED_FIELDS = ['username', 'phone_number', 'date_of_birth']
+
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/users/<username>/<filename>
     
@@ -19,22 +44,11 @@ def user_directory_path(instance, filename):
     return "users/{0}/{1}".format(instance.user.username, filename)
 
 class Profile(models.Model):
-    user = models.ForeignKey(User, related_name='profile', on_delete=models.CASCADE) # Don't forget related name for reverse lookup. user_instance.<related_name>_set.all()
+    user = models.ForeignKey(CustomUser, related_name='profile', on_delete=models.CASCADE) # Don't forget related name for reverse lookup. user_instance.<related_name>_set.all()
     avatar = models.ImageField(upload_to=user_directory_path, default='default.jpg', blank=True)
-    phone_number = PhoneNumberField(null=False, blank=False, unique=True)
-    birth_day = models.DateField(blank=False, null=False, auto_now_add=True) # auto_now_add=True because this project won't go to production
-
-
-    class Gender(models.TextChoices):
-        MALE = 'MALE', 'male'
-        FEMALE = 'FEMALE', 'female'
-        OTHER = 'OTHER', 'other'
-        NOT_SPECIFIED = 'NOT_SPECIFIED', 'not specified' # DEFAULT
-    
-    gender = models.CharField(max_length=13, choices=Gender.choices, default=Gender.NOT_SPECIFIED)
 
 class Address(models.Model):
-    user = models.ForeignKey(User, related_name="address", on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, related_name="addresses", on_delete=models.CASCADE)
     country = CountryField(blank=False, null=False)
     city = models.CharField(max_length=100, blank=False, null=False)
     district = models.CharField(max_length=100, blank=False, null=False)
@@ -43,8 +57,14 @@ class Address(models.Model):
     primary = models.BooleanField(default=False)
     phone_number = PhoneNumberField(null=True, blank=True)
     building_number = models.IntegerField(
-        blank=True, null=True, validators=[validate_address_number(1)]
+        blank=True, null=True, validators=[
+            MinLengthValidator(1, 'Building number can\'t be negative'),
+            MaxLengthValidator(99, 'Building number can\'t be more than 99')
+        ]
     )
     apartment_number = models.IntegerField(
-        blank=True, null=True, validators=[validate_address_number(1)]
+        blank=True, null=True, validators=[
+            MinLengthValidator(1, 'Apartment number can\'t be negative'),
+            MaxLengthValidator(99, 'Apartment number can\'t be more than 99')
+        ]
     )

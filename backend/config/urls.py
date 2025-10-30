@@ -18,9 +18,23 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from django.views.generic import TemplateView
 
 urlpatterns = [
+    # Connecting react with django
+    path('', TemplateView.as_view(template_name = 'index.html')),
+
+    # Register URL
+    # path('api/signup', )
+
+    # Admin
     path('admin/', admin.site.urls),
+    
+    # JWT views
+    path('api/token', TokenObtainPairView.as_view(), name='token-obtain'),
+    path('api/token/refresh', TokenRefreshView.as_view(), name='token-refresh'),
+    path('api/token/verify', TokenVerifyView.as_view(), name='token-verify'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
