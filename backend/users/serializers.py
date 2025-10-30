@@ -55,4 +55,7 @@ class CustomUserRegisterSerializer(serializers.ModelSerializer):
         return CustomUser.objects.create_user(**validated_data, is_verified = False)
 
 class CustomUserLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField()
+
     pass

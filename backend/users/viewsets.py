@@ -4,7 +4,7 @@ from .serializers import CustomUserSerializer
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import DjangoModelPermissions
 
-class UserViewSet(viewsets.ModelViewSet):
+class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer = CustomUserSerializer
     # authentication_classes = []
