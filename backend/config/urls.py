@@ -15,14 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from django.views.generic import TemplateView
 
 # Imports for AUTH
-from users.views import CustomUserRegister, CustomUserLogin
+from users.views import CustomUserRegister, CustomUserLogin, google_auth
 
 urlpatterns = [
     # Connecting react with django
@@ -31,9 +31,13 @@ urlpatterns = [
     # Auth URLS
     path('auth/signup/', CustomUserRegister.as_view(), name="user-register"),
     path('auth/login/', CustomUserLogin.as_view(), name="user-login"),
+    path('oauth/google/', google_auth, name="google-login"),
 
     # Admin
     path('admin/', admin.site.urls),
+
+    # AllAuth
+    path('accounts/', include('allauth.urls')),
     
     # JWT views
     path('api/token', TokenObtainPairView.as_view(), name='token-obtain'),

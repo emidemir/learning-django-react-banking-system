@@ -68,12 +68,6 @@ class CustomUserLoginSerializer(serializers.Serializer):
         except CustomUser.DoesNotExist:
             raise serializers.ValidationError('User with this email does not exist.')
         
-        # DEBUG: Check password
-        print(f"Username: {targetUser.username}")
-        print(f"Password from request: {password}")
-        print(f"Stored password hash: {targetUser.password}")
-        print(f"Password check result: {targetUser.check_password(password)}")
-       
         if email and password:
             user = authenticate(username=targetUser.username, password=password)
             print(f"Authenticate result: {user}")
