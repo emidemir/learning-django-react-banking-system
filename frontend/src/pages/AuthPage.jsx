@@ -1,82 +1,46 @@
-import React, { useState } from "react";
-import "../css/AuthPage.css";
+import React, { useState } from 'react';
+import SignInForm from '../components/SignInForm';
+import SignUpForm from '../components/SignUpForm';
+import { useNavigate, useLocation } from 'react-router-dom';
+import '../css/AuthPage.css';
 
-function Signup() {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: ""
-  });
+export default function AuthPage() {
+    const [isSignIn, setIsSignIn] = useState(true);
+    const navigate = useNavigate();
+    const location = useLocation();
 
-  const [message, setMessage] = useState("");
+    const handleSignInSuccess = (email) => {
+        if (location.state && location.state.nextPathname) {
+            navigate(location.state.nextPathname);
+        } else {
+            navigate('/home');
+        }
+    };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    const handleSignUpSuccess = (email) => {
+        setIsSignIn(true);
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const toggleForm = () => {
+        setIsSignIn((prev) => !prev);
+    };
 
-    if (!formData.username || !formData.email || !formData.password) {
-      setMessage("Please fill in all fields.");
-      return;
-    }
+    return (
+        <div className="auth-container">
+            <div className="auth-card">
+                {isSignIn ? (
+                    <SignInForm onSignInSuccess={handleSignInSuccess} />
+                ) : (
+                    <SignUpForm onSignUpSuccess={handleSignUpSuccess} />
+                )}
 
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/signup/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setMessage("Signup successful!");
-        setFormData({ username: "", email: "", password: "" });
-      } else {
-        const data = await response.json();
-        setMessage(data.detail || "Signup failed.");
-      }
-    } catch (error) {
-      setMessage("Error connecting to server.");
-      console.error("Error:", error);
-    }
-  };
-
-  return (
-    <div className="signup-container">
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSubmit} className="signup-form">
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={formData.username}
-          onChange={handleChange}
-        />
-
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-        />
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-
-        <button type="submit">Sign Up</button>
-      </form>
-      {message && <p className="signup-message">{message}</p>}
-    </div>
-  );
+                <p className="toggle-link">
+                    {isSignIn ? "Don't have an account? " : "Already have an account? "}
+                    <button onClick={toggleForm}>
+                        {isSignIn ? "Sign Up" : "Sign In"}
+                    </button>
+                </p>
+            </div>
+        </div>
+    );
 }
-
-export default Signup;

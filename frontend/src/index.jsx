@@ -6,14 +6,15 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import App from './App';
 import AuthPage from './pages/AuthPage'
+import Home from './pages/Home'
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const router = createBrowserRouter([
-  // {path:'/', element: <App/>},
-  // {path:'/auth', element: <AuthPage/>},
-  {path:'/', element:<AuthPage/>}
+  {path:'/', element: <App/>},
+  {path:'/auth', element:<AuthPage/>},
+  {path:'/home', element:<Home/>},
 ])
 
 root.render(
