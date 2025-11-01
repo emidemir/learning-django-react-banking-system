@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate
 
 from rest_framework.validators import UniqueValidator
 
@@ -55,7 +56,24 @@ class CustomUserRegisterSerializer(serializers.ModelSerializer):
         return CustomUser.objects.create_user(**validated_data, is_verified = False)
 
 class CustomUserLoginSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
-    password = serializers.CharField()
+    email = serializers.EmailField(max_length=255)
+    password = serializers.CharField(label=("Password"), style={'input_type': 'password'}, trim_whitespace=False, max_length=128, write_only=True)
+    
+    def validate(self, data):
+        username = data.get('email')
+        password = data.get('password')
 
-    pass
+        if username and password:
+            user = authenticate(request=self.context.get('request'),
+                                username=username, password=password)
+            if not user:
+                msg = ('Unable to log in with provided credentials.')
+                raise serializers.ValidationError(msg, code='authorization')
+        else:
+            msg = ('Must include "username" and "password".')
+            raise serializers.ValidationError(msg, code='authorization')
+
+        data['user'] = user
+        return data
+
+

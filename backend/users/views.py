@@ -3,6 +3,7 @@ from django.shortcuts import render
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -37,7 +38,8 @@ class CustomUserRegister(mixins.CreateModelMixin, generics.GenericAPIView):
         tokens = get_tokens_for_user(user)
 
         # Form the response
-        response_data = serializer.data
+        response_data = {}
+        response_data['email'] = serializer.data['email']    
         response_data.update(tokens)
         return Response(response_data, status=status.HTTP_201_CREATED)
 
@@ -51,8 +53,13 @@ class CustomUserRegister(mixins.CreateModelMixin, generics.GenericAPIView):
 
 
 # ----- LOGIN -----
-
-
 class CustomUserLogin(generics.GenericAPIView):
-    queryset = CustomUser.objects.all()     
+    queryset = CustomUser.objects.all()
     serializer_class = CustomUserLoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token = get_tokens_for_user(user)
+        return Response({"status": status.HTTP_200_OK, "Token": token['access']})
