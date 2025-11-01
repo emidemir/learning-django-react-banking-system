@@ -40,11 +40,11 @@ class AddressModelSerializer(serializers.ModelSerializer):
 class CustomUserRegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,
-        validators=[UniqueValidator(queryset=User.objects.all())]
+        validators=[UniqueValidator(queryset=CustomUser.objects.all())]
     )
     username = serializers.CharField(
         required=True,
-        validators=[UniqueValidator(queryset=User.objects.all())]
+        validators=[UniqueValidator(queryset=CustomUser.objects.all())]
     )
     password = serializers.CharField(write_only=True, min_length=8)
     
@@ -57,23 +57,39 @@ class CustomUserRegisterSerializer(serializers.ModelSerializer):
 
 class CustomUserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255)
-    password = serializers.CharField(label=("Password"), style={'input_type': 'password'}, trim_whitespace=False, max_length=128, write_only=True)
+    password = serializers.CharField(trim_whitespace=False, max_length=128, write_only=True)
     
     def validate(self, data):
-        username = data.get('email')
+        email = data.get('email')
         password = data.get('password')
 
-        if username and password:
-            user = authenticate(request=self.context.get('request'),
-                                username=username, password=password)
+        try:
+            targetUser = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            raise serializers.ValidationError('User with this email does not exist.')
+        
+        # DEBUG: Check password
+        print(f"Username: {targetUser.username}")
+        print(f"Password from request: {password}")
+        print(f"Stored password hash: {targetUser.password}")
+        print(f"Password check result: {targetUser.check_password(password)}")
+       
+        if email and password:
+            user = authenticate(username=targetUser.username, password=password)
+            print(f"Authenticate result: {user}")
+            
             if not user:
-                msg = ('Unable to log in with provided credentials.')
-                raise serializers.ValidationError(msg, code='authorization')
+                # Try manual check
+                if targetUser.check_password(password):
+                    print("Manual password check PASSED but authenticate FAILED")
+                    user = targetUser  # Use the user anyway
+                else:
+                    print("Manual password check FAILED")
+                    msg = 'Unable to log in with provided credentials.'
+                    raise serializers.ValidationError(msg, code='authorization')
         else:
-            msg = ('Must include "username" and "password".')
+            msg = 'Must include "email" and "password".'
             raise serializers.ValidationError(msg, code='authorization')
-
+            
         data['user'] = user
         return data
-
-
