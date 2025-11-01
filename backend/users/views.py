@@ -3,7 +3,6 @@ from django.shortcuts import render
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.tokens import AccessToken
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -56,6 +55,8 @@ class CustomUserRegister(mixins.CreateModelMixin, generics.GenericAPIView):
 class CustomUserLogin(generics.GenericAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserLoginSerializer
+    authentication_classes = []
+    permission_classes = []
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, context={'request': request})

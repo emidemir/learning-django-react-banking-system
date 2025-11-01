@@ -30,7 +30,7 @@ urlpatterns = [
 
     # Auth URLS
     path('auth/signup/', CustomUserRegister.as_view(), name="user-register"),
-    path('auth/login', CustomUserLogin.as_view(), name="user-login"),
+    path('auth/login/', CustomUserLogin.as_view(), name="user-login"),
 
     # Admin
     path('admin/', admin.site.urls),
