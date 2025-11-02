@@ -31,7 +31,7 @@ urlpatterns = [
     # Auth URLS
     path('auth/signup/', CustomUserRegister.as_view(), name="user-register"),
     path('auth/login/', CustomUserLogin.as_view(), name="user-login"),
-    path('oauth/google/', google_auth, name="google-login"),
+    path('oauth/google/', google_auth, name="google-auth"),
 
     # Admin
     path('admin/', admin.site.urls),

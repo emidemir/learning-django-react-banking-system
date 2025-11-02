@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { FcGoogle } from 'react-icons/fc';
+import { useGoogleLogin } from '@react-oauth/google';
 import '../css/AuthPage.css';
 
 export default function SignUpForm({ onSignUpSuccess }) {
@@ -19,7 +21,6 @@ export default function SignUpForm({ onSignUpSuccess }) {
             'password': password
         }
 
-        // Basic validation
         if (!username || !email || !password || !confirmPassword) {
             setError('All fields are required.');
             return;
@@ -36,7 +37,7 @@ export default function SignUpForm({ onSignUpSuccess }) {
         setLoading(true);
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/auth/signup/", {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/signup/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -63,6 +64,52 @@ export default function SignUpForm({ onSignUpSuccess }) {
             setLoading(false);
         }
     };
+
+    const googleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            setLoading(true);
+            setError('');
+
+            try {
+                // Send the access token to your Django backend
+                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/oauth/google/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ access_token: tokenResponse.access_token }),
+                });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    setError(data.detail || "Google Sign-Up failed.");
+                    setLoading(false);
+                    return;
+                }
+
+                const data = await response.json();
+
+                console.log(data)
+                
+                if (data.Token) {
+                    localStorage.setItem('authToken', data.Token);
+                }
+                
+                const userEmail = data.user.email;
+                const userName = data.user.username
+                onSignUpSuccess(userEmail);
+
+            } catch (error) {
+                console.error("Google Sign-Up Error:", error);
+                setError("Failed to connect for Google Sign-Up.");
+                setLoading(false);
+            }
+        },
+        onError: () => {
+            setError("Google Sign-Up was cancelled or failed.");
+            setLoading(false);
+        }
+    });
 
     return (
         <form onSubmit={handleSubmit}>
@@ -112,6 +159,28 @@ export default function SignUpForm({ onSignUpSuccess }) {
             </div>
             <button type="submit" className="auth-button" disabled={loading}>
                 {loading ? 'Signing Up...' : 'Sign Up'}
+            </button>
+
+            <div style={{ textAlign: 'center', margin: '20px 0', color: '#888' }}>
+                OR
+            </div>
+
+            <button
+                type="button"
+                className="auth-button google-signin-btn"
+                onClick={() => googleLogin()}
+                disabled={loading}
+                style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    backgroundColor: '#fff',
+                    color: '#444',
+                    border: '1px solid #ccc'
+                }}
+            >
+                <FcGoogle style={{ marginRight: '10px' }} />
+                Sign Up with Google
             </button>
         </form>
     );
