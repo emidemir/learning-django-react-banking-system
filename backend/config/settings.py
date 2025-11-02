@@ -216,3 +216,6 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+SOCIALACCOUNT_LOGIN_ON_GET = True # For the google UI
+LOGIN_REDIRECT_URL = None

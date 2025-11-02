@@ -4,7 +4,10 @@ from rest_framework import mixins
 from rest_framework import generics
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view
+
+from rest_framework.decorators import api_view, permission_classes
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import AllowAny
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -67,7 +70,9 @@ class CustomUserLogin(generics.GenericAPIView):
         token = get_tokens_for_user(user)
         return Response({"status": status.HTTP_200_OK, "Token": token['access']})
 
+@csrf_exempt
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def google_auth(request):
     access_token = request.data.get('access_token')
     
@@ -103,10 +108,11 @@ def google_auth(request):
         )
         
         # Get or create token
-        token, _ = Token.objects.get_or_create(user=user)
+        token = get_tokens_for_user(user)
         
         return Response({
-            'Token': token.key,
+            'Token': token['access'],  # Changed from tokens.access to tokens['access']
+            'refresh': token['refresh'],  # Optional: also return refresh token
             'user': {
                 'email': user.email,
                 'username': user.username,
