@@ -26,35 +26,16 @@ def get_tokens_for_user(user):
         'access': str(refresh.access_token),
     }
 
-class CustomUserRegister(mixins.CreateModelMixin, generics.GenericAPIView):
+# ----- REGISTER -----
+class CustomUserRegister(generics.ListCreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserRegisterSerializer
     authentication_classes = []
     permission_classes = []
 
-    def post(self, request, *args, **kwargs):
-        # Create the user
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = self.perform_create(serializer)
-
-        # Generate JWT token
-        tokens = get_tokens_for_user(user)
-
-        # Form the response
-        response_data = {}
-        response_data['email'] = serializer.data['email']    
-        response_data.update(tokens)
-        return Response(response_data, status=status.HTTP_201_CREATED)
-
-    # Override perform_create to return the user instance
     def perform_create(self, serializer):
-        user = serializer.save()
-        user.is_verified = True
-        user.save()
-        return user
-
-
+        
+        return super().perform_create(serializer)
 
 # ----- LOGIN -----
 class CustomUserLogin(generics.GenericAPIView):
@@ -70,8 +51,8 @@ class CustomUserLogin(generics.GenericAPIView):
         token = get_tokens_for_user(user)
         return Response({"status": status.HTTP_200_OK, "Token": token['access']})
 
-@csrf_exempt
 @api_view(['POST'])
+@csrf_exempt
 @permission_classes([AllowAny])
 def google_auth(request):
     access_token = request.data.get('access_token')

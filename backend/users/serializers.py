@@ -38,22 +38,18 @@ class AddressModelSerializer(serializers.ModelSerializer):
 
 # --- REGISTER SERIALIZER ---
 class CustomUserRegisterSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(
-        required=True,
-        validators=[UniqueValidator(queryset=CustomUser.objects.all())]
-    )
-    username = serializers.CharField(
-        required=True,
-        validators=[UniqueValidator(queryset=CustomUser.objects.all())]
-    )
-    password = serializers.CharField(write_only=True, min_length=8)
-    
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'password']
+        extra_kwargs = {'password': {'write_only':True}}
 
     def create(self, validated_data):
-        return CustomUser.objects.create_user(**validated_data, is_verified = False)
+        user = CustomUser.objects.create_user(
+            email=validated_data['email'],
+            username=validated_data['username'],
+            password=validated_data['password']
+        )
+        return user
 
 class CustomUserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255)
@@ -70,7 +66,6 @@ class CustomUserLoginSerializer(serializers.Serializer):
         
         if email and password:
             user = authenticate(username=targetUser.username, password=password)
-            print(f"Authenticate result: {user}")
             
             if not user:
                 # Try manual check
@@ -78,7 +73,7 @@ class CustomUserLoginSerializer(serializers.Serializer):
                     print("Manual password check PASSED but authenticate FAILED")
                     user = targetUser  # Use the user anyway
                 else:
-                    print("Manual password check FAILED")
+                    print("Manual password check FAILED")   
                     msg = 'Unable to log in with provided credentials.'
                     raise serializers.ValidationError(msg, code='authorization')
         else:
