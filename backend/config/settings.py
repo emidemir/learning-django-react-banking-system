@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     # Optional -- requires install using `django-allauth[socialaccount]`.
     'allauth.socialaccount',
 
-    # which apps (i.e. google, facebook, etc.)
+    # social media providers(i.e. google, facebook, etc.)
     'allauth.socialaccount.providers.google',
 ]
 
@@ -71,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
+    'users.middleware.VerificationMiddleware', # Verification email middleware
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -218,4 +219,5 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 SOCIALACCOUNT_LOGIN_ON_GET = True # For the google UI
-LOGIN_REDIRECT_URL = None
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = 'auth/login/'

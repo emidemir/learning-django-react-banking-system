@@ -1,5 +1,8 @@
 from django.shortcuts import render
 
+from allauth.account.signals import user_signed_up
+from django.contrib.auth import get_user_model
+
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -7,14 +10,16 @@ from rest_framework.authtoken.models import Token
 
 from rest_framework.decorators import api_view, permission_classes
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.views import APIView
 
 from .models import CustomUser
 from .serializers import CustomUserRegisterSerializer
 from .serializers import CustomUserLoginSerializer
+from .serializers import VerificationSerializer
 
 # ----- REGISTER -----
 
@@ -34,7 +39,9 @@ class CustomUserRegister(generics.ListCreateAPIView):
     permission_classes = []
 
     def perform_create(self, serializer):
-        
+        user = serializer.save()
+        User = get_user_model()
+        user_signed_up.send(sender=User, user = user) # Sending a signal whenver a user signs up via this view. The signal is imported from allauth. Not mandatory.
         return super().perform_create(serializer)
 
 # ----- LOGIN -----
@@ -51,6 +58,7 @@ class CustomUserLogin(generics.GenericAPIView):
         token = get_tokens_for_user(user)
         return Response({"status": status.HTTP_200_OK, "Token": token['access']})
 
+# ----- SOCIAL AUTH -----
 @api_view(['POST'])
 @csrf_exempt
 @permission_classes([AllowAny])
@@ -103,3 +111,26 @@ def google_auth(request):
     except Exception as e:
         print(f"Google auth error: {str(e)}")
         return Response({'detail': 'Authentication failed'}, status=status.HTTP_400_BAD_REQUEST)
+    
+# ----- VERIFICATION CODE VIEW -----
+class VerifyAccountAPIView(APIView):
+    permission_classes = [IsAuthenticated] # User must be logged in to verify their own account
+
+    def post(self, request, *args, **kwargs):
+        serializer = VerificationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        code = serializer.validated_data['code']
+
+        user = request.user # The authenticated user
+
+        if user.is_verified:
+            return Response({'detail': 'Account already verified.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if user.verification_code == code:
+            user.is_verified = True
+            user.verification_code = None # Clear the code after successful verification
+            user.save()
+            return Response({'detail': 'Account successfully verified!'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': 'Invalid verification code.'}, status=status.HTTP_400_BAD_REQUEST)
+

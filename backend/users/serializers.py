@@ -47,7 +47,8 @@ class CustomUserRegisterSerializer(serializers.ModelSerializer):
         user = CustomUser.objects.create_user(
             email=validated_data['email'],
             username=validated_data['username'],
-            password=validated_data['password']
+            password=validated_data['password'],
+            is_valid = False
         )
         return user
 
@@ -82,3 +83,7 @@ class CustomUserLoginSerializer(serializers.Serializer):
             
         data['user'] = user
         return data
+    
+# --- VERIFICATION CODE SERIALIZER ---
+class VerificationSerializer(serializers.Serializer):
+    code = serializers.CharField(max_length=6)

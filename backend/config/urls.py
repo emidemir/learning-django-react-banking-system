@@ -22,11 +22,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.views.generic import TemplateView
 
 # Imports for AUTH
-from users.views import CustomUserRegister, CustomUserLogin, google_auth
+from users.views import CustomUserRegister, CustomUserLogin, google_auth, VerifyAccountAPIView
 
 urlpatterns = [
     # Connecting react with django
-    path('', TemplateView.as_view(template_name = 'index.html')),
+    path('', TemplateView.as_view(template_name = 'index.html'), name="index"),
 
     # Auth URLS
     path('auth/signup/', CustomUserRegister.as_view(), name="user-register"),
@@ -35,6 +35,9 @@ urlpatterns = [
 
     # Admin
     path('admin/', admin.site.urls),
+
+    # Verification code endpoint
+    path('verify/', VerifyAccountAPIView.as_view(), name='verify-account'),
 
     # AllAuth
     path('accounts/', include('allauth.urls')),

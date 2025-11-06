@@ -29,7 +29,7 @@ class CustomUser(AbstractUser):
     
     # For KYC (Know Your Customer) - important for banking!
     is_verified = models.BooleanField(default=False)
-    
+    verification_code = models.CharField(max_length=6, blank=False, null=True)
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/users/<username>/<filename>
