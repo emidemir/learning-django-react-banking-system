@@ -1,12 +1,9 @@
-from django.shortcuts import render
-
 from allauth.account.signals import user_signed_up
 from django.contrib.auth import get_user_model
 
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.authtoken.models import Token
 
 from rest_framework.decorators import api_view, permission_classes
 from django.views.decorators.csrf import csrf_exempt
@@ -31,7 +28,6 @@ def get_tokens_for_user(user):
         'access': str(refresh.access_token),
     }
 
-# ----- REGISTER -----
 class CustomUserRegister(generics.ListCreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserRegisterSerializer

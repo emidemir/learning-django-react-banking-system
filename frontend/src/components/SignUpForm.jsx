@@ -14,13 +14,13 @@ export default function SignUpForm({ onSignUpSuccess }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-
+    
         const formData = {
             'username': username,
             'email': email,
             'password': password
         }
-
+    
         if (!username || !email || !password || !confirmPassword) {
             setError('All fields are required.');
             return;
@@ -33,9 +33,9 @@ export default function SignUpForm({ onSignUpSuccess }) {
             setError('Password must be at least 6 characters long.');
             return;
         }
-
+    
         setLoading(true);
-
+    
         try {
             const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/signup/`, {
                 method: "POST",
@@ -44,18 +44,27 @@ export default function SignUpForm({ onSignUpSuccess }) {
                 },
                 body: JSON.stringify(formData),
             });
-
+    
+            const data = await response.json();
+            
+            console.log('Response data:', data);
+    
             if (!response.ok) {
-                const data = await response.json();
                 setError(data.detail || "Signup failed. Please try again.");
                 setLoading(false);
                 return;
             }
-
+    
+            if (data.Token) {
+                localStorage.setItem('access_token', data.Token);
+                localStorage.setItem('refresh_token', data.refresh_token);
+            }
+    
             setUsername("");
             setEmail("");
             setPassword("");
             setConfirmPassword("");
+            setLoading(false);
             onSignUpSuccess(email);
             
         } catch (error) {
@@ -96,7 +105,6 @@ export default function SignUpForm({ onSignUpSuccess }) {
                 }
                 
                 const userEmail = data.user.email;
-                const userName = data.user.username
                 onSignUpSuccess(userEmail);
 
             } catch (error) {

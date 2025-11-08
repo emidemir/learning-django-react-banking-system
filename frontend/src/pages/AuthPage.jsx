@@ -18,7 +18,15 @@ export default function AuthPage() {
     };
 
     const handleSignUpSuccess = (email) => {
-        setIsSignIn(true);
+        if (location.state && location.state.nextPathname) {
+            navigate(location.state.nextPathname, {
+                state: { email: email }
+            });
+        } else {
+            navigate('/verification', {
+                state: { email: email }
+            });
+        }
     };
 
     const toggleForm = () => {

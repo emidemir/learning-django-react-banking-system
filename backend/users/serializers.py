@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate
 
 from rest_framework.validators import UniqueValidator
 
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from .models import CustomUser
 from .models import Profile
 from .models import Address
@@ -38,18 +40,35 @@ class AddressModelSerializer(serializers.ModelSerializer):
 
 # --- REGISTER SERIALIZER ---
 class CustomUserRegisterSerializer(serializers.ModelSerializer):
+    Token = serializers.SerializerMethodField()
+    refresh_token = serializers.SerializerMethodField()
+
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'password']
-        extra_kwargs = {'password': {'write_only':True}}
+        fields = ['username', 'email', 'password', 'Token', 'refresh_token']
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'email': {
+                'validators': [UniqueValidator(queryset=CustomUser.objects.all())]
+            }
+        }
 
+    def get_Token(self, obj):
+        refresh = RefreshToken.for_user(obj)
+        return str(refresh.access_token)
+
+    def get_refresh_token(self, obj):
+        refresh = RefreshToken.for_user(obj)
+        return str(refresh)
+    
     def create(self, validated_data):
         user = CustomUser.objects.create_user(
             email=validated_data['email'],
             username=validated_data['username'],
-            password=validated_data['password'],
-            is_valid = False
         )
+        user.set_password(validated_data['password'])
+        user.save()
+
         return user
 
 class CustomUserLoginSerializer(serializers.Serializer):
