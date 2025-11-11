@@ -22,12 +22,6 @@ class CustomUserModelSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['is_verified']  # can't be changed by user
 
-# --- PROFILE SERIALIZER ---
-class ProfileModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
-        fields = ['id', 'user', 'avatar']
-
 # --- ADDRESS SERIALIZER ---
 class AddressModelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -66,7 +60,9 @@ class CustomUserRegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             username=validated_data['username'],
         )
+        print(validated_data["password"])
         user.set_password(validated_data['password'])
+        print(user.password)
         user.save()
 
         return user
@@ -106,3 +102,10 @@ class CustomUserLoginSerializer(serializers.Serializer):
 # --- VERIFICATION CODE SERIALIZER ---
 class VerificationSerializer(serializers.Serializer):
     code = serializers.CharField(max_length=6)
+
+# --- PROFILE OBJECT SERIALIZER ---
+class ProfileSerializer(serializers.ModelSerializer):
+    user = CustomUserModelSerializer()
+    class Meta:
+        model = Profile
+        fields = '__all__'

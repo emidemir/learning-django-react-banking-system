@@ -41,8 +41,10 @@ def user_directory_path(instance, filename):
 class Profile(models.Model):
     user = models.ForeignKey(CustomUser, related_name='profile', on_delete=models.CASCADE) # Don't forget related name for reverse lookup. user_instance.<related_name>_set.all()
     avatar = models.ImageField(upload_to=user_directory_path, default='default.jpg', blank=True)
-    phone_number = PhoneNumberField(null=False, blank=False, default="99999999999")
-    date_of_birth = models.DateField(blank=False, null=False, default=datetime.datetime.now, validators=[validate_user_age])
+    phone_number = PhoneNumberField(null=True, blank=True, default="99999999999")
+    date_of_birth = models.DateField(blank=True, null=True, default=datetime.datetime.now, validators=[validate_user_age])
+    accounts = models.ForeignKey('accounts.Account', default=None ,null=True, on_delete=models.PROTECT)
+    
     
 class Address(models.Model):
     user = models.ForeignKey(CustomUser, related_name="addresses", on_delete=models.CASCADE)

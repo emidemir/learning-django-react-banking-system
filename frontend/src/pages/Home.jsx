@@ -1,21 +1,75 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { React, useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate} from 'react-router-dom';
 import '../css/HomePage.css';
 
 export default function HomePage() {
-    // Dummy data for demonstration
-    const userName = "Jane Doe";
-    const accountNumber = "XXXX-XXXX-1234";
-    const currentBalance = 12500.50;
-    const accountType = "Savings";
+    const location = useLocation()
+    const navigate = useNavigate();
 
-    const recentTransactions = [
-        { id: 1, description: "Amazon.com", amount: -45.99, type: "debit", date: "2023-10-26" },
-        { id: 2, description: "Salary Deposit", amount: 2500.00, type: "credit", date: "2023-10-25" },
-        { id: 3, description: "Starbucks Coffee", amount: -5.75, type: "debit", date: "2023-10-24" },
-        { id: 4, description: "Utility Bill", amount: -78.20, type: "debit", date: "2023-10-23" },
-    ];
+    // Email is passed down from the AuthPage for data retrieval
+    const { email } = location
+    
+    // States
+    const [profileObject, setProfileObject] = useState();
+    const [userName, setUserName] = useState();
+    const [accountNumber, setAccountNumber] = useState();
+    const [accountType, setAccountType] = useState();
+    const [currentBalance, setCurrentBalance] = useState();
+    const [recentTransactions, setRecentTransactions] = useState();
 
+   
+    const authToken = localStorage.getItem('authToken')
+
+    // ----- Redirect unauthorized users to login -----
+    useEffect(()=>{
+        if(!authToken){
+            navigate('/auth', {state: { nextPathname: '/profile' }}) 
+            // Passign states between components
+            // use 'useLocation' to pick them on /auth
+            // const {state} = useLocation();
+            // const { nextPathName } = state;
+            return;
+        }
+    }, [authToken, navigate]);
+
+    // ----- Data fetch -----
+    useEffect(()=>{
+        const fetchUserProfile = async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/profiles/${email}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${authToken}`
+                    }
+                });
+    
+                if (!response.ok){
+                    // Error if response status is not ok
+                }
+    
+                const data = await response.json()
+                console.log(data)
+                setAvatar(data.avatar)
+                setPhoneNumber(data.phone_number)
+                setBirthDate(data.date_of_birth)
+
+                const baseAccount = data.accounts.filter((acc) => acc.type = "DEBIT")[0]
+                setAccountNumber(baseAccount.account_number)
+                setAccountType(baseAccount.account_type)
+                setCurrentBalance(baseAccount.balance)
+                setRecentTransactions(baseAccount.transactions)
+                setUserName(data.user.username)
+                
+            } catch (error) {
+                console.log(error)            
+            }
+    
+        }
+
+        fetchUserProfile()
+    }, [authToken, email])
+    
     return (
         <div className="home-container">
             <header className="home-header">
@@ -37,10 +91,11 @@ export default function HomePage() {
                 <aside className="quick-actions">
                     <h2>Quick Actions</h2>
                     <div className="action-buttons">
+                        {/* https://stackoverflow.com/questions/30115324/pass-props-in-link-react-router */}
                         <Link to="/transfer" className="action-button">Transfer Funds</Link>
-                        <Link to="/paybills" className="action-button">Other Accounts</Link>
-                        <Link to="/paybills" className="action-button">Profile</Link>
-                        <Link to="/statements" className="action-button">Log Out</Link>
+                        <Link to="/other-accounts" className="action-button">Other Accounts</Link>
+                        <Link to="/profile" className="action-button">Profile</Link>
+                        <Link to="/logout" className="action-button">Log Out</Link>
                     </div>
                 </aside>
 

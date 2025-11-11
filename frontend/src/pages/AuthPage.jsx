@@ -13,7 +13,7 @@ export default function AuthPage() {
         if (location.state && location.state.nextPathname) {
             navigate(location.state.nextPathname);
         } else {
-            navigate('/home');
+            navigate('/home', {state: {email: email}});
         }
     };
 

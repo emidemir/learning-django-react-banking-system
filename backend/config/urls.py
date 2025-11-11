@@ -41,6 +41,9 @@ urlpatterns = [
 
     # AllAuth
     path('accounts/', include('allauth.urls')),
+
+    # Profile api
+    path('', include('config.routers')),
     
     # JWT views
     path('api/token', TokenObtainPairView.as_view(), name='token-obtain'),
