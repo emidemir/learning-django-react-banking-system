@@ -1,0 +1,129 @@
+/* EmailVerificationPage.css */
+
+.verification-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f7f6;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.verification-card {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.verification-card h2 {
+    color: #004d99;
+    margin-bottom: 25px;
+    font-size: 2em;
+}
+
+.verification-card p {
+    font-size: 1.1em;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.verification-card p strong {
+    color: #007bff;
+}
+
+.icon-wrapper {
+    margin-bottom: 30px;
+}
+
+.icon-wrapper svg {
+    width: 80px;
+    height: 80px;
+    color: #28a745; /* Green for success/check icon */
+}
+
+.resend-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+    width: auto; /* Allow button to size to content */
+    display: inline-block; /* For centering */
+}
+
+.resend-button:hover {
+    background-color: #0056b3;
+}
+
+.resend-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.feedback-message {
+    margin-top: 15px;
+    font-size: 0.95em;
+    color: #666;
+}
+
+.feedback-message.success {
+    color: #28a745;
+}
+
+.feedback-message.error {
+    color: #dc3545;
+}
+
+
+.code-input-wrapper {
+    margin: 20px 0;
+    text-align: center; /* Center the input if it's narrower than its container */
+}
+
+.verification-code-input {
+    width: 100%; /* Take full width of parent */
+    max-width: 250px; /* Or a fixed width for the input itself */
+    padding: 10px 15px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 24px; /* Larger font for codes */
+    text-align: center;
+    letter-spacing: 5px; /* Adds spacing between characters */
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.verification-code-input:focus {
+    border-color: #007bff; /* Highlight on focus */
+}
+
+/* Optional: Add a subtle animation/glow on focus */
+.verification-code-input:focus {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.verify-button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+
+.verify-button:hover {
+    background-color: #0056b3;
+}

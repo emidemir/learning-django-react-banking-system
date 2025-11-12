@@ -16,6 +16,9 @@ export default function HomePage() {
     const [accountType, setAccountType] = useState();
     const [currentBalance, setCurrentBalance] = useState();
     const [recentTransactions, setRecentTransactions] = useState();
+    const [avatar, setAvatar] = useState();
+    const [phoneNumber, setPhoneNumber] = useState();
+    const [birthDate, setBirthDate] = useState();
 
    
     const authToken = localStorage.getItem('authToken')
@@ -37,7 +40,7 @@ export default function HomePage() {
         const fetchUserProfile = async () => {
             try {
                 const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/profiles/${email}`, {
-                    method: "POST",
+                    method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${authToken}`

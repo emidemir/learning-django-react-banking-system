@@ -1,0 +1,141 @@
+.home-container {
+    padding: 30px;
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+    color: #333;
+}
+
+.home-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.home-header h1 {
+    color: #004d99; /* Darker blue for bank branding */
+    font-size: 2.2em;
+    margin: 0;
+}
+
+.user-greeting {
+    font-size: 1.1em;
+    color: #555;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Main content wider than sidebar/quick actions */
+    gap: 30px;
+}
+
+.account-summary,
+.recent-transactions,
+.quick-actions {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.account-summary h2,
+.recent-transactions h2,
+.quick-actions h2 {
+    color: #004d99;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.6em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.account-balance {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #28a745; /* Green for positive balance */
+    margin-bottom: 15px;
+}
+
+.account-details p {
+    margin: 8px 0;
+    font-size: 0.95em;
+    color: #666;
+}
+
+.account-details span {
+    font-weight: bold;
+    color: #333;
+}
+
+.transactions-list {
+    list-style: none;
+    padding: 0;
+}
+
+.transactions-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.transactions-list li:last-child {
+    border-bottom: none;
+}
+
+.transaction-description {
+    font-weight: bold;
+    color: #444;
+}
+
+.transaction-amount {
+    font-weight: bold;
+}
+
+.transaction-amount.credit {
+    color: #28a745; /* Green for incoming money */
+}
+
+.transaction-amount.debit {
+    color: #dc3545; /* Red for outgoing money */
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.action-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-align: center;
+    text-decoration: none; /* If using <Link> or <a> */
+}
+
+.action-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+    .home-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .home-header h1 {
+        margin-bottom: 10px;
+    }
+}

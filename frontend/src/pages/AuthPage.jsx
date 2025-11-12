@@ -10,11 +10,7 @@ export default function AuthPage() {
     const location = useLocation();
 
     const handleSignInSuccess = (email) => {
-        if (location.state && location.state.nextPathname) {
-            navigate(location.state.nextPathname);
-        } else {
-            navigate('/home', {state: {email: email}});
-        }
+       navigate('/home', {state: {email: email}});
     };
 
     const handleSignUpSuccess = (email) => {

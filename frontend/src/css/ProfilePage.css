@@ -1,0 +1,136 @@
+/* Reusing common structural styles from AuthPage.css */
+
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f7f6; /* Light background for the whole page */
+    padding: 20px;
+}
+
+.profile-card {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px; /* Consistent card width */
+    text-align: left;
+}
+
+.profile-card h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 1.8em;
+}
+
+.profile-card h3 {
+    margin-top: 25px;
+    margin-bottom: 15px;
+    color: #555;
+    font-size: 1.2em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+/* --- Information Display Styles --- */
+
+.info-group {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dotted #eee;
+    font-size: 1.1em;
+}
+
+.info-group:last-of-type {
+    border-bottom: none;
+    margin-bottom: 20px;
+}
+
+.info-group strong {
+    color: #444;
+    font-weight: 600;
+}
+
+.info-group span {
+    color: #666;
+}
+
+/* --- Form and Input Styles (reused from Auth) --- */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+.profile-card input[type="text"],
+.profile-card input[type="email"],
+.profile-card input[type="password"],
+.profile-card select { /* Styling for the new select input */
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box; /* Ensures padding doesn't affect total width */
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+.profile-card input:focus,
+.profile-card select:focus {
+    border-color: #007bff; /* Focus color */
+    outline: none;
+}
+
+/* --- Button Styles --- */
+
+/* Base style for auth-button (for consistency) */
+.auth-button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #007bff; /* Primary action color */
+    color: white;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+.auth-button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+.auth-button:disabled {
+    background-color: #a0c9f1;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Style for the Logout button */
+.logout-button {
+    background-color: #dc3545 !important; /* Red color for log out/danger */
+    margin-top: 20px;
+}
+
+.logout-button:hover:not(:disabled) {
+    background-color: #c82333 !important;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: #eee;
+    margin: 25px 0;
+}
