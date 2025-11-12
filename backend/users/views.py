@@ -18,7 +18,6 @@ from .serializers import CustomUserRegisterSerializer
 from .serializers import CustomUserLoginSerializer
 from .serializers import VerificationSerializer
 
-# ----- REGISTER -----
 
 # Helper function to get tokens for a user after registeration
 def get_tokens_for_user(user):
@@ -28,6 +27,7 @@ def get_tokens_for_user(user):
         'access': str(refresh.access_token),
     }
 
+# ----- REGISTER -----
 class CustomUserRegister(generics.ListCreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserRegisterSerializer
@@ -38,7 +38,6 @@ class CustomUserRegister(generics.ListCreateAPIView):
         user = serializer.save()
         User = get_user_model()
         user_signed_up.send(sender=User, user = user) # Sending a signal whenver a user signs up via this view. The signal is imported from allauth. Not mandatory.
-        return super().perform_create(serializer)
 
 # ----- LOGIN -----
 class CustomUserLogin(generics.GenericAPIView):

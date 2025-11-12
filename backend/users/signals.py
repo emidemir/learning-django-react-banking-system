@@ -47,4 +47,5 @@ def send_confirmation_email(user, **kwargs):
     print(user)
     code = str(random.randint(100000, 900000))
     user.verification_code = code
+    user.save()
     send_simple_email(code, settings.DEFAULT_FROM_EMAIL, user.email)

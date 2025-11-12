@@ -31,6 +31,19 @@ class CustomUser(AbstractUser):
     is_verified = models.BooleanField(default=False)
     verification_code = models.CharField(max_length=6, blank=False, null=True)
 
+    # def save(self, *args, **kwargs):
+    #     import traceback
+    #     print("=" * 70)
+    #     print("CUSTOMUSER SAVE() CALLED")
+    #     print("USERNAME:", self.username)
+    #     print("PASSWORD FIELD:", self.password)
+    #     print("IS PASSWORD HASHED?:", self.password.startswith('pbkdf2_'))
+    #     print("\nCALL STACK:")
+    #     for line in traceback.format_stack()[:-1]:
+    #         print(line.strip())
+    #     print("=" * 70)
+    #     super().save(*args, **kwargs)
+
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/users/<username>/<filename>
     

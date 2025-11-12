@@ -56,17 +56,19 @@ class CustomUserRegisterSerializer(serializers.ModelSerializer):
         return str(refresh)
     
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(
-            email=validated_data['email'],
-            username=validated_data['username'],
-        )
-        print(validated_data["password"])
-        user.set_password(validated_data['password'])
-        print(user.password)
+        password = validated_data.pop('password')
+        user = CustomUser.objects.create(**validated_data)
+        
+        user.set_password(password)
+        
         user.save()
-
+        fresh_user = CustomUser.objects.get(id=user.id)
+        print("FRESH PASSWORD FROM DB:", fresh_user.password)
+        print("FRESH CHECK_PASSWORD:", fresh_user.check_password(password))
+        print("=" * 50)
         return user
 
+# --- LOGIN SERIALIZER ---
 class CustomUserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255)
     password = serializers.CharField(trim_whitespace=False, max_length=128, write_only=True)
@@ -75,23 +77,21 @@ class CustomUserLoginSerializer(serializers.Serializer):
         email = data.get('email')
         password = data.get('password')
 
-        try:
-            targetUser = CustomUser.objects.get(email=email)
-        except CustomUser.DoesNotExist:
-            raise serializers.ValidationError('User with this email does not exist.')
-        
         if email and password:
-            user = authenticate(username=targetUser.username, password=password)
-            
-            if not user:
-                # Try manual check
-                if targetUser.check_password(password):
-                    print("Manual password check PASSED but authenticate FAILED")
-                    user = targetUser  # Use the user anyway
-                else:
-                    print("Manual password check FAILED")   
-                    msg = 'Unable to log in with provided credentials.'
-                    raise serializers.ValidationError(msg, code='authorization')
+            try:
+                targetUser = CustomUser.objects.get(email=email)
+                user = authenticate(request=self.context.get('request'), username=targetUser.username, password=password)
+                
+                if not user:
+                    if targetUser.check_password(password):
+                        print("Manual password check PASSED but authenticate FAILED")
+                        user = targetUser  # Use the user anyway
+                    else:
+                        print("Manual password check FAILED")   
+                        msg = 'Unable to log in with provided credentials.'
+                        raise serializers.ValidationError(msg, code='authorization')
+            except CustomUser.DoesNotExist:
+                raise serializers.ValidationError('User with this email does not exist.')
         else:
             msg = 'Must include "email" and "password".'
             raise serializers.ValidationError(msg, code='authorization')
