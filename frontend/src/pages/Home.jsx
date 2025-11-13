@@ -2,25 +2,25 @@ import { React, useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate} from 'react-router-dom';
 import '../css/HomePage.css';
 
+import Transactions from '../components/Transactions'
+
 export default function HomePage() {
-    const location = useLocation()
+    const {state} = useLocation()
     const navigate = useNavigate();
 
     // Email is passed down from the AuthPage for data retrieval
-    const { email } = location
+    const { email } = state
     
     // States
-    const [profileObject, setProfileObject] = useState();
     const [userName, setUserName] = useState();
     const [accountNumber, setAccountNumber] = useState();
     const [accountType, setAccountType] = useState();
-    const [currentBalance, setCurrentBalance] = useState();
-    const [recentTransactions, setRecentTransactions] = useState();
+    const [currentBalance, setCurrentBalance] = useState(0);
+    const [recentTransactions, setRecentTransactions] = useState([]);
     const [avatar, setAvatar] = useState();
     const [phoneNumber, setPhoneNumber] = useState();
     const [birthDate, setBirthDate] = useState();
 
-   
     const authToken = localStorage.getItem('authToken')
 
     // ----- Redirect unauthorized users to login -----
@@ -39,39 +39,59 @@ export default function HomePage() {
     useEffect(()=>{
         const fetchUserProfile = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/profiles/${email}`, {
+                const profile_response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/profiles/${email}/`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${authToken}`
                     }
                 });
-    
-                if (!response.ok){
-                    // Error if response status is not ok
+
+                const transactions_response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/transactions/`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${authToken}`
+                    }
+                });
+
+                const accounts_response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/accounts/`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${authToken}`
+                    }
+                })
+
+                if (!profile_response.ok || !transactions_response.ok || !accounts_response.ok){
+                    console.log(`Profile status: ${profile_response.status}\n`)
+                    console.log(`Transactions status: ${transactions_response.status}\n`)
+                    console.log(`Accounts status: ${accounts_response.status}\n`)
                 }
     
-                const data = await response.json()
-                console.log(data)
-                setAvatar(data.avatar)
-                setPhoneNumber(data.phone_number)
-                setBirthDate(data.date_of_birth)
+                const profile_data = await profile_response.json()
+                const transactions_data = await transactions_response.json()
+                const accounts_data = await accounts_response.json()
 
-                const baseAccount = data.accounts.filter((acc) => acc.type = "DEBIT")[0]
-                setAccountNumber(baseAccount.account_number)
-                setAccountType(baseAccount.account_type)
-                setCurrentBalance(baseAccount.balance)
-                setRecentTransactions(baseAccount.transactions)
-                setUserName(data.user.username)
-                
+                setAvatar(profile_data.avatar)
+                setPhoneNumber(profile_data.phone_number)
+                setBirthDate(profile_data.date_of_birth)
+
+                if (accounts_data){
+                    const baseAccount = accounts_data.filter((acc) => acc.account_type === "DEBIT")[0]
+                    setAccountNumber(baseAccount.account_number)
+                    setAccountType(baseAccount.account_type)
+                    setCurrentBalance(baseAccount.balance)
+                }
+                setRecentTransactions(transactions_data)
+        
+                setUserName(profile_data.user.username)        
             } catch (error) {
                 console.log(error)            
             }
-    
         }
-
         fetchUserProfile()
-    }, [authToken, email])
+    }, [authToken])
     
     return (
         <div className="home-container">
@@ -87,7 +107,6 @@ export default function HomePage() {
                     <div className="account-details">
                         <p>Account Number: <span>{accountNumber}</span></p>
                         <p>Account Type: <span>{accountType}</span></p>
-                        {/* More details can be added here, e.g., interest rate, branch */}
                     </div>
                 </section>
 
@@ -97,33 +116,12 @@ export default function HomePage() {
                         {/* https://stackoverflow.com/questions/30115324/pass-props-in-link-react-router */}
                         <Link to="/transfer" className="action-button">Transfer Funds</Link>
                         <Link to="/other-accounts" className="action-button">Other Accounts</Link>
-                        <Link to="/profile" className="action-button">Profile</Link>
+                        <Link to="/profile" state={{userName, email, avatar, phoneNumber, birthDate}} className="action-button">Profile</Link>
                         <Link to="/logout" className="action-button">Log Out</Link>
                     </div>
                 </aside>
 
-                <section className="recent-transactions">
-                    <h2>Recent Transactions</h2>
-                    <ul className="transactions-list">
-                        {recentTransactions.map(transaction => (
-                            <li key={transaction.id}>
-                                <div>
-                                    <span className="transaction-description">{transaction.description}</span>
-                                    <br />
-                                    <small>{transaction.date}</small>
-                                </div>
-                                <span className={`transaction-amount ${transaction.type}`}>
-                                    {transaction.type === 'credit' ? '+' : '-'}
-                                    ${Math.abs(transaction.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                    {/* Link to full transaction history */}
-                    <p style={{ textAlign: 'right', marginTop: '20px' }}>
-                        <Link to="/transactions" style={{ color: '#007bff', textDecoration: 'none' }}>View All Transactions</Link>
-                    </p>
-                </section>
+                <Transactions transactions={recentTransactions}/>
             </div>
         </div>
     );

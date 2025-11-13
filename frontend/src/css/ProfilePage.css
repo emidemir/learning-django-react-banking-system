@@ -1,136 +1,273 @@
-/* Reusing common structural styles from AuthPage.css */
+/* src/css/ProfilePage.css */
 
+/* --- General Setup & Variables --- */
+:root {
+    --primary-color: #007bff;
+    --primary-hover-color: #0056b3;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --light-gray-color: #f8f9fa;
+    --medium-gray-color: #e9ecef;
+    --dark-gray-color: #6c757d;
+    --text-color: #343a40;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Main Container --- */
 .profile-container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Aligns card to the top */
+    padding: 40px 20px;
     min-height: 100vh;
-    background-color: #f4f7f6; /* Light background for the whole page */
-    padding: 20px;
+    background-color: var(--light-gray-color);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
+/* --- Profile Card --- */
 .profile-card {
     background-color: #ffffff;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 30px 40px;
     width: 100%;
-    max-width: 450px; /* Consistent card width */
-    text-align: left;
-}
-
-.profile-card h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #333;
-    font-size: 1.8em;
-}
-
-.profile-card h3 {
-    margin-top: 25px;
-    margin-bottom: 15px;
-    color: #555;
-    font-size: 1.2em;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
-}
-
-/* --- Information Display Styles --- */
-
-.info-group {
+    max-width: 600px;
     display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px dotted #eee;
-    font-size: 1.1em;
+    flex-direction: column;
+    gap: 25px; /* Space between sections */
 }
 
-.info-group:last-of-type {
-    border-bottom: none;
-    margin-bottom: 20px;
+/* --- Header --- */
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--medium-gray-color);
+    padding-bottom: 20px;
+    margin-bottom: 10px; /* Adds a bit more space */
 }
 
-.info-group strong {
-    color: #444;
+.profile-title-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+}
+
+.profile-title {
+    font-size: 1.75rem;
     font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
 }
 
-.info-group span {
-    color: #666;
+/* --- Avatar Section --- */
+.avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
 
-/* --- Form and Input Styles (reused from Auth) --- */
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--medium-gray-color);
+}
+
+.upload-avatar-btn {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    background-color: var(--dark-gray-color);
+    color: white;
+    transition: background-color 0.2s;
+}
+
+.upload-avatar-btn:hover {
+    background-color: #5a6268;
+}
+
+.upload-avatar-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* --- Form --- */
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
 .form-group {
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-group label {
-    display: block;
+    font-weight: 600;
     margin-bottom: 8px;
-    font-weight: 500;
-    color: #555;
+    color: var(--text-color);
 }
 
-.profile-card input[type="text"],
-.profile-card input[type="email"],
-.profile-card input[type="password"],
-.profile-card select { /* Styling for the new select input */
-    width: 100%;
+.form-group input {
     padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box; /* Ensures padding doesn't affect total width */
-    font-size: 1em;
-    transition: border-color 0.3s;
+    border: 1px solid #ced4da;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.profile-card input:focus,
-.profile-card select:focus {
-    border-color: #007bff; /* Focus color */
+.form-group input.read-only {
+    background-color: var(--light-gray-color);
+    color: var(--dark-gray-color);
+    cursor: not-allowed;
+    border-color: var(--medium-gray-color);
+}
+
+.form-group input.editable {
+    border-color: var(--primary-color);
+}
+
+.form-group input.editable:focus {
     outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
-/* --- Button Styles --- */
+/* --- Password Field Specifics --- */
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
 
-/* Base style for auth-button (for consistency) */
-.auth-button {
+.password-input-wrapper input {
     width: 100%;
-    padding: 12px;
-    margin-top: 10px;
+    /* Adjust padding to not overlap with icons */
+    padding-left: 35px; 
+    padding-right: 40px;
+}
+
+.password-lock-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--dark-gray-color);
+    z-index: 2;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 1px;
+    top: 1px;
+    bottom: 1px;
+    width: 40px;
+    background: none;
     border: none;
-    border-radius: 8px;
-    background-color: #007bff; /* Primary action color */
-    color: white;
-    font-size: 1.1em;
+    cursor: pointer;
+    color: var(--dark-gray-color);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- Actions (Buttons & Messages) --- */
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+    border-top: 1px solid var(--medium-gray-color);
+    padding-top: 25px;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap; /* Allows buttons to stack on smaller screens */
+    justify-content: center;
+}
+
+.profile-actions button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s, opacity 0.3s;
+    transition: background-color 0.2s, transform 0.1s;
 }
 
-.auth-button:hover:not(:disabled) {
-    background-color: #0056b3;
+.profile-actions button:active {
+    transform: scale(0.98);
 }
 
-.auth-button:disabled {
-    background-color: #a0c9f1;
-    cursor: not-allowed;
+.edit-btn, .save-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.edit-btn:hover, .save-btn:hover {
+    background-color: var(--primary-hover-color);
+}
+
+.save-btn:disabled {
+    background-color: var(--primary-hover-color);
+    cursor: wait;
     opacity: 0.8;
 }
 
-/* Style for the Logout button */
-.logout-button {
-    background-color: #dc3545 !important; /* Red color for log out/danger */
-    margin-top: 20px;
+.cancel-btn {
+    background-color: var(--dark-gray-color);
+    color: white;
+}
+.cancel-btn:hover {
+    background-color: #5a6268;
+}
+.cancel-btn:disabled {
+    opacity: 0.8;
+    cursor: wait;
 }
 
-.logout-button:hover:not(:disabled) {
-    background-color: #c82333 !important;
+.change-password-btn {
+    background-color: transparent;
+    border: 1px solid var(--dark-gray-color);
+    color: var(--dark-gray-color);
+}
+.change-password-btn:hover {
+    background-color: var(--dark-gray-color);
+    color: white;
 }
 
-hr {
-    border: 0;
-    height: 1px;
-    background: #eee;
-    margin: 25px 0;
+.password-note {
+    font-size: 0.85rem;
+    color: var(--dark-gray-color);
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* --- Feedback Messages --- */
+.message {
+    font-weight: 600;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box; /* Ensures padding is included in width */
+}
+
+.message.success {
+    color: var(--success-color);
+    background-color: #e9f7ef;
+}
+
+.message.error {
+    color: var(--danger-color);
+    background-color: #fbebee;
 }

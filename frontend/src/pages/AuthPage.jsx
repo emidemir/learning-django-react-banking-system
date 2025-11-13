@@ -14,6 +14,7 @@ export default function AuthPage() {
     };
 
     const handleSignUpSuccess = (email) => {
+        console.log("On handle sign up success (Email: " + {email} +")\n");
         if (location.state && location.state.nextPathname) {
             navigate(location.state.nextPathname, {
                 state: { email: email }

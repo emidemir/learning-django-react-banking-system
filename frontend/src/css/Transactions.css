@@ -1,0 +1,123 @@
+/* src/css/RecentTransactions.css */
+
+/* Define colors for consistency */
+:root {
+    --credit-color: #28a745; /* Green for incoming funds */
+    --debit-color: #dc3545;  /* Red for outgoing funds */
+    --primary-text-color: #212529;
+    --secondary-text-color: #6c757d;
+    --border-color: #e9ecef;
+}
+
+.transactions-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 25px 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    grid-column: 1 / -1; /* Makes it span the full width of the grid */
+}
+
+.transactions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.transactions-header h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #0d3b66; /* Dark blue from your design */
+}
+
+.view-all-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.view-all-link:hover {
+    color: #0056b3;
+}
+
+.transactions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between each transaction item */
+}
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.transaction-item:hover {
+    background-color: #f8f9fa; /* Slight highlight on hover */
+}
+
+.transaction-icon-container {
+    flex-shrink: 0;
+}
+
+.transaction-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.transaction-icon.credit {
+    background-color: var(--credit-color);
+}
+
+.transaction-icon.debit {
+    background-color: var(--debit-color);
+}
+
+.transaction-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.transaction-description {
+    font-weight: 600;
+    color: var(--primary-text-color);
+}
+
+.transaction-date {
+    font-size: 0.85rem;
+    color: var(--secondary-text-color);
+}
+
+.transaction-amount {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-left: auto; /* Pushes amount to the far right */
+}
+
+.transaction-amount.credit {
+    color: var(--credit-color);
+}
+
+.transaction-amount.debit {
+    color: var(--debit-color);
+}
+
+.no-transactions-message {
+    text-align: center;
+    color: var(--secondary-text-color);
+    padding: 20px 0;
+}

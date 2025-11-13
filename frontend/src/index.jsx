@@ -9,6 +9,7 @@ import App from './App';
 import AuthPage from './pages/AuthPage'
 import Home from './pages/Home'
 import EmailVerificationPage from './pages/EmailVerificationPage';
+import Profile from './pages/Profile';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -16,7 +17,8 @@ const router = createBrowserRouter([
   {path:'/', element: <App/>},
   {path:'/auth', element:<AuthPage/>},
   {path:'/home', element:<Home/>},
-  {path:'/verification', element:<EmailVerificationPage/>}
+  {path:'/verification', element:<EmailVerificationPage/>},
+  {path:'/profile', element: <Profile/>}
 ])
 
 root.render(
