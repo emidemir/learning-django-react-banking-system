@@ -9,7 +9,6 @@ from_email = settings.DEFAULT_FROM_EMAIL
 from allauth.account.signals import user_signed_up
 
 from .models import Profile
-
 import random
 
 User = get_user_model()

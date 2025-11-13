@@ -1,12 +1,15 @@
 from rest_framework import routers
 from users.viewsets import ProfileViewSet
-
+from transactions.viewsets import TransactionsViewset
+from accounts.viewsets import AccountsViewset
 
 # Router for --USERSs-- viewset
 router = routers.DefaultRouter()
-router.register(prefix='profiles', viewset=ProfileViewSet, basename='profile') # prefix is for used in urls, and basename is used for reverse naming.
-urlpatterns = router.urls # Remember to add this in the config.urls file. It doesn't go automatically!!!!!
 
-# Router for --TRANSACTIONS-- viewset
+router.register(prefix='profiles', viewset=ProfileViewSet, basename='profile')
+router.register(prefix='transactions', viewset=TransactionsViewset, basename='transaction')
+router.register(prefix='accounts', viewset=AccountsViewset, basename='account')
+
+urlpatterns = router.urls
 
 # Router for --ACCOUNTS-- viewset
