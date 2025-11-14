@@ -9,3 +9,6 @@ class Transaction(models.Model):
     send_to = models.ForeignKey("accounts.Account", related_name="toAccount", null=True, on_delete=models.SET_NULL)
     amount = models.DecimalField(max_digits=15, decimal_places=2)
     date_time = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-date_time']
