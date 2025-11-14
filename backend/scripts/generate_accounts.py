@@ -35,8 +35,17 @@ def run():
         u9.set_password('123123123')
         u9.save()
 
-    # Create accounts if they don't exist
-    a10, acc_created_10 = Account.objects.get_or_create(
+    # Create u8
+    u8, created_8 = User.objects.get_or_create(
+        username='u8',
+        defaults={'email': 'u8@g.com'}
+    )
+    if created_8:
+        u8.set_password('123123123')
+        u8.save()
+
+    # Create accounts for u10
+    a10, _ = Account.objects.get_or_create(
         user=u10,
         defaults={
             'account_number': 'A0010',
@@ -46,7 +55,8 @@ def run():
         }
     )
 
-    a9, acc_created_9 = Account.objects.get_or_create(
+    # Create accounts for u9
+    a9, _ = Account.objects.get_or_create(
         user=u9,
         defaults={
             'account_number': 'A0009',
@@ -56,9 +66,32 @@ def run():
         }
     )
 
+    # Create **two accounts for u8**
+    a8_1, _ = Account.objects.get_or_create(
+        user=u8,
+        account_number='A0008-1',
+        defaults={
+            'limit': 7000,
+            'balance': 3500,
+            'account_type': Account.AccountType.DEBIT
+        }
+    )
+
+    a8_2, _ = Account.objects.get_or_create(
+        user=u8,
+        account_number='A0008-2',
+        defaults={
+            'limit': 9000,
+            'balance': 6000,
+            'account_type': Account.AccountType.CREDIT
+        }
+    )
+
     print("✅ Accounts created or verified:")
     print(f" - {a10}")
     print(f" - {a9}")
+    print(f" - {a8_1}")
+    print(f" - {a8_2}")
 
 if __name__ == "__main__":
     run()

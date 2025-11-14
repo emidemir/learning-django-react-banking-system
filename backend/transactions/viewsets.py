@@ -17,7 +17,7 @@ class TransactionsViewset(viewsets.ModelViewSet):
         qs = Transaction.objects.all()
 
         user = self.request.user
-        user_accounts = user.account_set.all()
+        user_accounts = user.account_set.filter(id = self.request.query_params.get('account_id'))
 
         query_rule = Q(send_from__in=user_accounts) | Q(send_to__in=user_accounts)
         

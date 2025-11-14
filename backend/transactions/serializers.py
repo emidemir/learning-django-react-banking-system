@@ -20,9 +20,8 @@ class TransactionSerializer(serializers.ModelSerializer):
             return obj.send_to.account_number
         
     def get_type(self, obj):
-        current_user = self.context.get('request').user
-
-        if obj.send_from.user == current_user:
+        account_id = int(self.context.get('request').query_params.get('account_id'))
+        if account_id == obj.send_from.id:
             return "debit"
-        elif obj.send_to.user == current_user:
+        elif account_id == obj.send_to.id:
             return "credit"
