@@ -22,7 +22,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.views.generic import TemplateView
 
 # Imports for AUTH
-from users.views import CustomUserRegister, CustomUserLogin, google_auth, VerifyAccountAPIView
+from users.views import CustomUserRegister, CustomUserLogin, google_auth, VerifyAccountAPIView, log_out_user
 
 urlpatterns = [
     # Connecting react with django
@@ -32,6 +32,7 @@ urlpatterns = [
     path('auth/signup/', CustomUserRegister.as_view(), name="user-register"),
     path('auth/login/', CustomUserLogin.as_view(), name="user-login"),
     path('oauth/google/', google_auth, name="google-auth"),
+    path('logout/', log_out_user, name="logout"),
 
     # Admin
     path('admin/', admin.site.urls),

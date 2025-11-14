@@ -1,5 +1,6 @@
 from allauth.account.signals import user_signed_up
 from django.contrib.auth import get_user_model
+from django.contrib.auth import logout
 
 from rest_framework import mixins
 from rest_framework import generics
@@ -129,3 +130,7 @@ class VerifyAccountAPIView(APIView):
         else:
             return Response({'detail': 'Invalid verification code.'}, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(["POST"])
+@csrf_exempt
+def log_out_user(request):
+    logout(request)

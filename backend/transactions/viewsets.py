@@ -4,12 +4,14 @@ from django.db.models import Q
 
 from .models import Transaction
 from .serializers import TransactionSerializer
+from .paginations import StandardResultsSetPagination
 
 
 class TransactionsViewset(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
     permission_classes = [DjangoModelPermissions]
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         qs = Transaction.objects.all()

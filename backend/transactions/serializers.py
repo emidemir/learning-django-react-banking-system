@@ -21,7 +21,6 @@ class TransactionSerializer(serializers.ModelSerializer):
         
     def get_type(self, obj):
         current_user = self.context.get('request').user
-        print(current_user)
 
         if obj.send_from.user == current_user:
             return "debit"
