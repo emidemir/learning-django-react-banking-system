@@ -10,6 +10,8 @@ import AuthPage from './pages/AuthPage'
 import Home from './pages/Home'
 import EmailVerificationPage from './pages/EmailVerificationPage';
 import Profile from './pages/Profile';
+import ViewAllTransactions from './pages/ViewAllTransacctions';
+import TransferFunds from './pages/TransferFunds';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -18,7 +20,9 @@ const router = createBrowserRouter([
   {path:'/auth', element:<AuthPage/>},
   {path:'/home', element:<Home/>},
   {path:'/verification', element:<EmailVerificationPage/>},
-  {path:'/profile', element: <Profile/>}
+  {path:'/profile', element: <Profile/>},
+  {path:'/transactions', element:<ViewAllTransactions/>},
+  {path:'/transfer', element:<TransferFunds/>}
 ])
 
 root.render(

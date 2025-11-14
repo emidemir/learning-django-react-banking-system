@@ -1,0 +1,150 @@
+.transfer-funds-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.transfer-funds-header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+}
+
+.transfer-funds-header h1 {
+    font-size: 2.2em;
+    color: #0056b3; /* A nice blue */
+    margin: 0;
+    font-weight: 600;
+}
+
+.transfer-form .form-group {
+    margin-bottom: 20px;
+}
+
+.transfer-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+    font-size: 1.05em;
+}
+
+.transfer-form input[type="text"],
+.transfer-form input[type="number"],
+.transfer-form select,
+.transfer-form textarea {
+    width: calc(100% - 22px); /* Account for padding and border */
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    color: #333;
+    background-color: #f9f9f9;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.transfer-form input:focus,
+.transfer-form select:focus,
+.transfer-form textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+    background-color: #fff;
+}
+
+.transfer-form select {
+    appearance: none; /* Remove default browser select arrow */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.6-6.4H18.9c-5%200-9.6%202-13.6%206.4-4%204-6.4%209.6-6.4%2015.6s2.4%2011.6%206.4%2015.6l126.8%20127.8c4%204%209.6%206.4%2015.6%206.4s11.6-2.4%2015.6-6.4L287%20100.6c4-4%206.4-9.6%206.4-15.6s-2.4-11.6-6.4-15.6z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 10px;
+}
+
+
+.transfer-form textarea {
+    resize: vertical; /* Allow vertical resizing */
+    min-height: 80px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.submit-button, .cancel-button {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.submit-button {
+    background-color: #007bff; /* Primary action blue */
+    color: white;
+}
+
+.submit-button:hover:not(:disabled) {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+.submit-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.cancel-button {
+    background-color: #6c757d; /* Grey for secondary action */
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+}
+
+.error-message {
+    color: #dc3545; /* Red for errors */
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 0.95em;
+}
+
+.success-message {
+    color: #28a745; /* Green for success */
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 0.95em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .transfer-funds-container {
+        margin: 20px;
+        padding: 20px;
+    }
+    .form-actions {
+        flex-direction: column;
+    }
+}

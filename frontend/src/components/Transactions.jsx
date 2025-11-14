@@ -4,7 +4,7 @@ import '../css/Transactions.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 
-export default function Transactions({ transactions }) {
+export default function Transactions({ transactions, isAll}) {
     // A helper function to format the date nicely (optional)
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -15,7 +15,7 @@ export default function Transactions({ transactions }) {
         <section className="transactions-card">
             <div className="transactions-header">
                 <h2>Recent Transactions</h2>
-                <Link to="/transactions" className="view-all-link">View All</Link>
+                {isAll ? (<></>):(<Link to="/transactions" className="view-all-link">View All</Link>)}
             </div>
             
             <div className="transactions-list">
@@ -24,7 +24,6 @@ export default function Transactions({ transactions }) {
                 ) : (
                     transactions.map(transaction => {
                         const isCredit = transaction.type === 'credit';
-                        
                         return (
                             <div key={transaction.id} className="transaction-item">
                                 <div className="transaction-icon-container">
@@ -33,8 +32,10 @@ export default function Transactions({ transactions }) {
                                     </div>
                                 </div>
                                 <div className="transaction-details">
-                                    <span className="transaction-description">{transaction.description}</span>
-                                    <span className="transaction-date">{formatDate(transaction.date)}</span>
+                                    <span className="transaction-description">{transaction.title}</span>
+                                    <span className="transaction-description">{transaction.message}</span>
+                                    <span className="transaction-date">{formatDate(transaction.date_time)}</span>
+                                    <span className="transaction-date">From {transaction.send_from} to {transaction.send_to}</span>
                                 </div>
                                 <span className={`transaction-amount ${isCredit ? 'credit' : 'debit'}`}>
                                     {isCredit ? '+' : '-'}
